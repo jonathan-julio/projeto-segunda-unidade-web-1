@@ -1,0 +1,13 @@
+# Ativa o mecanismo de reescrita
+RewriteEngine On
+
+# Define a base para todas as regras de reescrita
+RewriteBase /projecto/
+
+# Se o arquivo ou diretório não existir, redirecionar para 404.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /projecto/404.html [L]
+
+# Configuração do documento de erro 404
+ErrorDocument 404 /projecto/404.html

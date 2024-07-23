@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Portfolio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+        }
+        .profile img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+        }
+        .profile h3 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .profile p {
+            margin-bottom: 10px;
+        }
+        .social-icons {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+        }
+        .social-icons li a {
+            color: #495057;
+        }
+        .contact-info h4 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .contact-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .contact-info li {
+            margin-bottom: 10px;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .about-me {
+            margin-bottom: 40px;
+        }
+        .skill-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .skill-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bodyPage container">
+        <div class="row">
+            <div class="col-md-3 sidebar">
+                <div class="profile">
+                    <img src="https://via.placeholder.com/150" alt="Profile Picture" />
+                    <h3>Richard Hanrick</h3>
+                    <p>Web Developer</p>
+                    <ul class="social-icons">
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="contact-info">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:richard@example.com">richard@example.com</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+12133622706">+1 (213) 362-2706</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-calendar-alt"></i>
+                            June 21, 1980
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Sacramento, California, USA
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9 main-content">
+                <div class="about-me">
+                    <h2>Sobre mim</h2>
+                    <p>Sou Diretor de Criação e UI/UX Designer em Sydney, Austrália, e trabalho com desenvolvimento web e mídia impressa. Gosto de transformar problemas complexos em designs simples, bonitos e intuitivos.</p>
+                    <p>Meu trabalho é construir seu site de forma que seja funcional e fácil de usar, mas ao mesmo tempo atraente. Além disso, adiciono um toque pessoal ao seu produto e garanto que ele seja atraente e fácil de usar. Meu objetivo é transmitir sua mensagem e identidade da maneira mais criativa. Criei web design para muitas empresas de marcas famosas.</p>
+                </div>
+                <div class="skills">
+                    <h2>O que estou fazendo</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="skill-card">
+                                <i class="fas fa-code"></i>
+                                <h3>Web Design</h3>
+                                <p>O design mais moderno e de alta qualidade feito a nível profissional.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="skill-card">
+                                <i class="fas fa-laptop-code"></i>
+                                <h3>Desenvolvimento Web</h3>
+                                <p>Desenvolvimento de sites de alta qualidade em nível profissional.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="skill-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>Aplicativos móveis</h3>
+                                <p>Desenvolvimento profissional de aplicativos para iOS e Android.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="skill-card">
+                                <i class="fas fa-camera"></i>
+                                <h3>Fotografia</h3>
+                                <p>Faço fotos de alta qualidade de qualquer categoria em nível profissional.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+export default function renderPermissionForm(users, containerId, setUser, setPermissao, postFunction) {...}

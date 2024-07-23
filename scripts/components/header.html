@@ -1,0 +1,30 @@
+<div class="navbar-logo-left">
+    <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="imgs/jpeg/logo.jpg" alt="Logo" loading="lazy" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+
+                <ul class="navbar-nav" id="header-reset">
+                    <li class="nav-item"><a class="nav-link" href="./workspace.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" id="user-link" href="./portfolio/${localStorage.login}">Portfólio</a></li>
+                    <li class="nav-item"><a class="nav-link" id="admin-link" href="./admin.html">Administrador</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./personalizar.html">Personalizar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./editarPerfil.html">Perfil</a></li>
+                    <li class="nav-item"><a class="btn btn-dark ml-3" href="./" onclick="limparLocalStorage()">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<script>
+    function limparLocalStorage() {
+        localStorage.clear();
+    }
+</script>

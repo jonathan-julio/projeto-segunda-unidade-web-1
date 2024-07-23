@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #home {
+            padding-top: 50px;
+        }
+        .text-monospace {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar-logo-left">
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="imgs/jpeg/logo.jpg" alt="Logo" loading="lazy" />
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    
+                    <ul class="navbar-nav" id="header-singup">
+                        <li class="nav-item"><a class="btn btn-dark ml-3" href="./login.html">Ja sou membro</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <div id="home" class="container">
+        <h1 class="mb-4 pt-5">Bem-vindo ao Nosso portfolio</h1>
+        <div class="row pt-2">
+            <div class="col-md-8 text-monospace">
+                <p class="mb-4 text-md-left">Crie e compartilhe seu portfólio profissional de maneira fácil e intuitiva. No Nosso portfolio, você pode:<br />
+                    Construir seu portfólio: Adicione projetos e mostre suas habilidades e experiências.<br />
+                    Colaborar com outros: Marque outros profissionais como participantes dos seus projetos e mostre o trabalho em equipe.<br />
+                    Exibir seu talento: Deixe seu portfólio disponível para qualquer pessoa visualizar e descubra novas oportunidades de networking e carreira.<br /><br />
+                    Junte-se à nossa comunidade e comece a destacar suas realizações hoje mesmo!
+                </p>
+                <a href="signup.html" class="btn btn-dark mt-4">Cadastre-se</a>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center">
+                <img src="imgs/jpeg/gatinho.png" alt="Gatinho" />
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function loadComponent(componentId, url) {
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById(componentId).innerHTML = data;
+                if (componentId === 'header') {
+                    configureHeader();
+                }
+            })
+            .catch(error => console.error('Error loading component:', error));
+    }
+    
+    // Simula sessionStorage.login
+    document.getElementById('user-login').textContent = sessionStorage.getItem('login') || 'Usuário';
+</script>
+</html>

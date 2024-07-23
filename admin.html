@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="App.css">
+    <style>
+        .alert-container {
+            display: flex;
+            justify-content: end;
+            position: relative;
+            height: 50px;
+        }
+
+        .alert {
+            position: absolute;
+            right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div class='bodyPage mx-3'>
+        <div id="alert-container" class="d-flex justify-content-end"></div>
+        <section class="gallery-overview">
+            <div class="container pt-4">
+                <div class="col d-flex justify-content-center">
+                    <h2 class="mb-1">Administrador</h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-2">
+                        <form id="logForm" class="dadosPortfolio">
+                            <fieldset class="border p-4">
+                                <legend class="w-auto">Buscar log</legend>
+                                <div>
+                                    <div class="d-flex justify-content-start">Selecione o usuário:*</div>
+                                    <select id="logUserSelect" class="form-control"></select>
+                                </div>
+                                <textarea id="logTextarea" rows="5" class="form-control mt-2"
+                                    placeholder='Clique em buscar' aria-label="With textarea" disabled></textarea>
+                                <div class="text-center pt-3">
+                                    <button type="submit" class="btn btn-dark">Buscar</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 p-2">
+                        <form id="blockedForm" class="dadosPortfolio">
+                            <fieldset class="border p-4">
+                                <legend class="w-auto">Buscar bloqueados</legend>
+                                <textarea id="blockedTextarea" rows="8" class="form-control mt-2"
+                                    placeholder='Clique em buscar' aria-label="With textarea" disabled></textarea>
+                                <div class="text-center pt-2">
+                                    <button type="submit" class="btn btn-dark">Buscar</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div id="adminForms" class=" row col d-flex p-0 m-0 "></div>
+                </div>
+        </section>
+    </div>
+
+    <script type="module">
+
+        import UserService from './scripts/services/userService.js';
+        import PostService from './scripts/services/PostService.js';
+        import AdminService from './scripts/services/AdminService.js';
+        import { isConnected, loadHeader, formatarData, showAlert } from './scripts/utils.js';
+        loadHeader();
+        const users = [];
+        const role = localStorage.getItem('role');
+
+        document.addEventListener("DOMContentLoaded", function () {
+            isConnected();
+
+            UserService.fetchUsers()
+                .then(response => {
+                    response.json().then(data => {
+                        console.log(data);
+                        users.push(...data);
+                        populateUserSelect("logUserSelect");
+                        populateUserSelect("permissionUserSelect");
+                        populateUserSelect("accessUserSelect");
+                        populateUserSelect("passwordUserSelect");
+                    })
+                })
+                .catch(error => console.error(error));
+
+            document.getElementById('logForm').addEventListener('submit', getLogs);
+            document.getElementById('blockedForm').addEventListener('submit', getBlocked);
+
+            if (role === "ADMIN" || role === "MODERADOR") {
+                addAdminForms();
+            }
+            else {
+                console.log(role);
+            }
+        });
+
+        function populateUserSelect(selectId) {
+            const select = document.getElementById(selectId);
+            users.forEach(user => {
+                const option = document.createElement("option");
+                option.value = user.id;
+                option.text = user.login;
+                select.add(option);
+            });
+        }
+
+
+        function getLogs(e) {
+            e.preventDefault();
+            const userLog = document.getElementById('logUserSelect').value;
+            if (userLog) {
+                AdminService.fetchLogs(userLog)
+                    .then(response => {
+                        response.json().then(data => {
+                            const logTexts = data.map(log => `Changer ${log.id}: ${log.changer}, \nData: ${formatarData(log.data)}\nFunction: ${log.function}\n\n`);
+                            document.getElementById('logTextarea').value = logTexts.join('');
+                        })
+
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            } else {
+                showAlert('Nenhum usuario selecionado', 'error');
+            }
+        }
+
+        function getBlocked(e) {
+            e.preventDefault();
+            AdminService.fetchBlocked()
+                .then(response => {
+                    response.json().then(data => {
+                        const blockedTexts = data.map(blocked => `ID usuario : ${blocked.id}\nLogin : ${blocked.login} \nNome: ${blocked.person.nome}\n\n`);
+                        document.getElementById('blockedTextarea').value = blockedTexts.join('');
+                    })
+                })
+                .catch(error => showAlert(error.message, 'error'));
+        }
+
+        function addAdminForms() {
+            const adminForms = document.getElementById("adminForms");
+            adminForms.innerHTML = `
+                <div class="col-lg-4  p-2">
+                    <form id="permissionForm" class="dadosPortfolio">
+                        <fieldset class="border pt-4 px-4 pb-5">
+                            <legend class="w-auto">Alterar permissões</legend>
+                            <div class="d-flex justify-content-start">Selecione o usuario:*</div>
+                            <select id="permissionUserSelect" class="form-control"></select>
+                            <div class="d-flex justify-content-start">Selecione a permissão:*</div>
+                            <select id="permissionSelect" class="form-control">
+                                <option value="">Selecione</option>
+                                <option value="MODERADOR">MODERADOR</option>
+                                <option value="USER">USER</option>
+                                <option value="ESPECIAL">ESPECIAL</option>
+                            </select>
+                            <div class="text-center pt-4">
+                                <button type="submit" class="btn btn-dark">Alterar</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="col-lg-4  p-2">
+                    <form id="accessForm" class="dadosPortfolio">
+                        <fieldset class="border pt-4 px-4 pb-5">
+                            <legend class="w-auto">Alterar acesso</legend>
+                            <div class="d-flex justify-content-start">Selecione o usuario:*</div>
+                            <select id="accessUserSelect" class="form-control"></select>
+                            <div class="d-flex justify-content-start">Selecione o acesso:*</div>
+                            <select id="accessSelect" class="form-control">
+                                <option value="LIBERADO">LIBERAR</option>
+                                <option value="BLOQUEADO">BLOQUEAR</option>
+                            </select>
+                            <div class="text-center pt-4">
+                                <button type="submit" class="btn btn-dark">Alterar</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="col-lg-4  p-2 ">
+                    <form id="passwordForm" class="dadosPortfolio">
+                        <fieldset class="border pt-4 px-4">
+                            <legend class="w-auto">Alterar senha</legend>
+                            <div class="d-flex justify-content-start">Selecione o usuario:*</div>
+                            <select id="passwordUserSelect" class="form-control"></select>
+                            <div class="form-group justify-content-start">
+                                <label class="d-flex justify-content-start" for="newPassword">Nova Senha</label>
+                                <input type="password" id="newPassword" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="d-flex justify-content-start" for="confirmPassword">Confirme a nova senha</label>
+                                <input type="password" id="confirmPassword" class="form-control" required />
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-dark m-1">Alterar</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            `;
+
+            document.getElementById('permissionForm').addEventListener('submit', setRole);
+            document.getElementById('accessForm').addEventListener('submit', setAccess);
+            document.getElementById('passwordForm').addEventListener('submit', setPassword);
+        }
+
+        function setRole(e) {
+            e.preventDefault();
+            const userPermissao = document.getElementById('permissionUserSelect').value;
+            const permissao = document.getElementById('permissionSelect').value;
+            if (userPermissao && permissao) {
+                AdminService.postPermissao({ usuarioID: userPermissao, tipo: permissao })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            showAlert('Permissão alterada com sucesso.', "success")
+                        }
+                        else {
+                            response.json().then(data => {
+                                showAlert(data.errors, 'error')
+
+                            })
+
+                        }
+
+
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            } else {
+                showAlert('Nenhum usuario e/ou permissão selecionado', 'error');
+            }
+        }
+
+        function setAccess(e) {
+            e.preventDefault();
+            const userAcesso = document.getElementById('accessUserSelect').value;
+            const acesso = document.getElementById('accessSelect').value;
+            if (userAcesso && acesso) {
+                AdminService.postAcesso({ usuarioID: userAcesso, acesso: acesso })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            showAlert('Acesso alterado com sucesso.', 'success')
+                        }
+                        else {
+                            response.json().then(data => {
+                                showAlert(data.errors, 'error')
+                            })
+
+                        }
+
+
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+
+            } else {
+                showAlert('Nenhum usuario e/ou acesso selecionado', 'error');
+            }
+        }
+
+        function checkVariables() {
+            const password = document.getElementById('newPassword').value;
+            const checkPassword = document.getElementById('confirmPassword').value;
+            if (password !== checkPassword) {
+                showAlert('Confirmação da senha inválida. Verifique novamente a nova senha.', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function setPassword(e) {
+            e.preventDefault();
+            if (!checkVariables()) {
+                return;
+            }
+            const userSenha = document.getElementById('passwordUserSelect').value;
+            const password = document.getElementById('newPassword').value;
+            AdminService.patchPasswordAdmin({ usuarioID: userSenha, password: password })
+                .then((response) => {
+                    if (response.status === 200) {
+                        console.log(response);
+                        showAlert('Senha alterada com sucesso.', 'success')
+                    }
+                    else {
+                        response.json().then(data => {
+                            showAlert(data.errors, 'error')
+                        })
+                    }
+                })
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Não Encontrada</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="App.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px 50px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 100px;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #6c757d;
+        }
+
+        .btn-home {
+            margin-top: 20px;
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+
+        #original-url {
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <p>Página Não Encontrada</p>
+       
+        <a href="index.html" class="btn btn-primary btn-home">Voltar para a Página Inicial</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Captura a URL original
+            const originalUrl = window.location.href;
+            // Exibe a URL original na página
+            document.getElementById('original-url').textContent = originalUrl;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar-logo-left">
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="imgs/jpeg/logo.jpg" alt="Logo" loading="lazy" />
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    
+                    <ul class="navbar-nav" id="header-reset">
+                        <li class="nav-item"><a class="nav-link" href="./">Inicio</a></li>
+                        <li class="nav-item"><a class="btn btn-dark ml-3" href="./login.html">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <div class="container justify-content-center mb-5 pb-5">
+        <div class="alert alert-danger" role="alert" id="alert" style="display: none;"></div>
+        <div class="mt-3 d-flex justify-content-center">
+            <div class="text-center">
+                <h2 class="mb-4">Formulário de Cadastro</h2>
+            </div>
+        </div>
+        <div class="mt-3 d-flex justify-content-center">
+            <form id="signupForm">
+                <div class="form-group m-1">
+                    <label for="login" class="d-flex justify-content-start"><strong>Login:</strong></label>
+                    <input placeholder="Insira seu Login" type="text" class="form-control" id="login" name="login" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="senha" class="d-flex justify-content-start"><strong>Senha:</strong></label>
+                    <input placeholder="Insira sua Senha" type="password" class="form-control" id="senha" name="senha" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="email" class="d-flex justify-content-start"><strong>E-mail:</strong></label>
+                    <input placeholder="Insira seu email" type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="nome" class="d-flex justify-content-start"><strong>Nome:</strong></label>
+                    <input placeholder="Insira seu Nome" type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="data" class="d-flex justify-content-start"><strong>Data de Nascimento:</strong></label>
+                    <input type="date" class="form-control" id="data" name="data" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="sexo" class="d-flex justify-content-start"><strong>Sexo:</strong></label>
+                    <select class="form-control" id="sexo" name="sexo" required>
+                        <option value="">Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group m-1">
+                    <label for="texto" class="d-flex justify-content-start"><strong>Texto do Perfil:</strong></label>
+                    <input placeholder="Insira o Texto do Perfil" type="text" class="form-control" id="texto" name="texto" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="textoSecundario" class="d-flex justify-content-start"><strong>Texto Secundário do Perfil:</strong></label>
+                    <input placeholder="Insira o Texto Secundário do Perfil" type="text" class="form-control" id="textoSecundario" name="textoSecundario" required>
+                </div>
+                <div class="form-group m-1">
+                    <label for="about" class="d-flex justify-content-start"><strong>Sobre:</strong></label>
+                    <textarea placeholder="Insira informações sobre você" class="form-control" id="about" name="about" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="color" class="d-flex justify-content-start"><strong>Cor do texto:</strong></label>
+                        <input type="color" class="form-control" id="color" name="color" required>
+                    </div>
+                    <div class="col">
+                        <label for="background" class="d-flex justify-content-start"><strong>Cor de Fundo:</strong></label>
+                        <input type="color" class="form-control" id="background" name="background" required>
+                    </div>
+                </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-dark">Cadastrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = {
+                login: document.getElementById('login').value,
+                senha: document.getElementById('senha').value,
+                email: document.getElementById('email').value,
+                person: {
+                    nome: document.getElementById('nome').value,
+                    data: document.getElementById('data').value,
+                    sexo: document.getElementById('sexo').value,
+                    profile: {
+                        texto: document.getElementById('texto').value,
+                        textoSecundario: document.getElementById('textoSecundario').value,
+                        about: document.getElementById('about').value,
+                        color: document.getElementById('color').value,
+                        background: document.getElementById('background').value
+                    }
+                }
+            };
+
+            fetch('/api/createUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 201) {
+                    document.getElementById('alert').classList.remove('alert-danger');
+                    document.getElementById('alert').classList.add('alert-success');
+                    document.getElementById('alert').innerText = 'Cadastro realizado com sucesso.';
+                    document.getElementById('alert').style.display = 'block';
+                    setTimeout(() => window.location.href = '/login', 1500);
+                } else {
+                    document.getElementById('alert').classList.remove('alert-success');
+                    document.getElementById('alert').classList.add('alert-danger');
+                    document.getElementById('alert').innerText = 'Erro ao realizar cadastro.';
+                    document.getElementById('alert').style.display = 'block';
+                    setTimeout(() => document.getElementById('alert').style.display = 'none', 1500);
+                }
+            })
+            .catch(error => {
+                document.getElementById('alert').classList.remove('alert-success');
+                document.getElementById('alert').classList.add('alert-danger');
+                document.getElementById('alert').innerText = error.message;
+                document.getElementById('alert').style.display = 'block';
+                setTimeout(() => document.getElementById('alert').style.display = 'none', 1500);
+            });
+        });
+    </script>
+    
+</body>
+</html>

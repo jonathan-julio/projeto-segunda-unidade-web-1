@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="header"></div>
+    <div class="bodyPage mx-5">
+        <div id="alert-container" class="d-flex justify-content-end"></div>
+        <aside class="gallery-overview">
+            <div class="container mt-3 d-flex justify-content-center">
+                <div class="text-center">
+                    <h2 class="mb-1">Configurações</h2>
+                </div>
+            </div>
+            <div class="container pt-2 pb-5">
+                <div class="row d-flex justify-content-center">
+                    <div class="col col-lg-10 py-5 d-flex justify-content-center">
+                        <div class="card-0">
+                            <h3>Dados pessoais</h3>
+                            <p>
+                                Personalize seus dados pessoais, Senha, nome, sexo, etc... Após concluir, clique em
+                                salvar para gravar as alterações.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <form id="passwordForm">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border text-start">Alterar sua senha</legend>
+                                <div class="form-group text-start">
+                                    <label for="lastPassword">Senha atual</label>
+                                    <input type="password" class="form-control" id="lastPassword" name="lastPassword"
+                                        required />
+                                </div>
+                                <div class="form-group text-start">
+                                    <label for="password">Nova Senha</label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        required />
+                                </div>
+                                <div class="form-group text-start">
+                                    <label for="checkpassword">Confirme a nova senha</label>
+                                    <input type="password" class="form-control" id="checkpassword" name="checkpassword"
+                                        required />
+                                </div>
+                                <div class="text-center text-start m-1">
+                                    <button type="submit" class="btn btn-dark">Salvar</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="col-lg-4">
+                        <form id="personalInfoForm">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">Dados do perfil</legend>
+                                <div class="form-group text-start">
+                                    <label for="nome">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" required />
+                                </div>
+                                <div class="form-group text-start">
+                                    <label for="data">Data de Nascimento</label>
+                                    <input type="date" class="form-control" id="data" name="data" required disabled />
+                                </div>
+                                <div class="form-group text-start">
+                                    <label for="sexo">Sexo</label>
+                                    <select class="form-control" id="sexo" name="sexo" required>
+                                        <option value="">Selecione</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="O">Outro</option>
+                                    </select>
+                                </div>
+                                <div class="text-center m-1">
+                                    <button type="submit" class="btn btn-dark">Salvar</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+
+    <script type="module">
+
+        import ProfileService from './scripts/services/profileService.js';
+        import UserService from './scripts/services/userService.js';
+        import { showAlert, loadHeader, isConnected } from './scripts/utils.js';
+        loadHeader();
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            /* function showAlert(message, type) {
+                const alertContainer = document.getElementById('alert-container');
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${alertClass} position-fixed m-2 m-sm-1`;
+                alertDiv.style.zIndex = "9999";
+                alertDiv.role = 'alert';
+                alertDiv.innerText = message;
+                alertContainer.appendChild(alertDiv);
+
+                setTimeout(() => {
+                    alertContainer.removeChild(alertDiv);
+                }, 2500);
+            } */
+            ProfileService.fetchPerson()
+                .then(response => response.json())
+                .then(person => {
+                    document.getElementById('nome').value = person.nome;
+                    document.getElementById('data').value = person.data;
+                    document.getElementById('sexo').value = person.sexo;
+                })
+                .catch(error => showAlert(error.message, 'error'));
+
+            function handleSavePassword(event) {
+                event.preventDefault();
+                const lastPassword = document.getElementById('lastPassword').value;
+                const password = document.getElementById('password').value;
+                const checkpassword = document.getElementById('checkpassword').value;
+
+                if (password !== checkpassword) {
+                    showAlert('Confirmação da senha inválida. Verifique novamente a nova senha.', 'error');
+                    return;
+                }
+
+                const body = {
+                    lastPassword: lastPassword,
+                    password: password
+                };
+
+                UserService.patchPassword(body)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            showAlert('Senha alterada com sucesso.', 'success');
+                            setTimeout(() => window.location.href = './workspace.html', 1500);
+                        } else {
+                            response.json().then(data => {
+                                showAlert(data.errors[0], 'error');
+                            });
+                        }
+                        
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            }
+
+            function handleSavePerson(event) {
+                event.preventDefault();
+                const nome = document.getElementById('nome').value;
+                const sexo = document.getElementById('sexo').value;
+
+                const body = {
+                    nome: nome,
+                    sexo: sexo
+                };
+
+                ProfileService.patchPerson(body)
+                    .then(() => {
+                        showAlert('Perfil atualizado com sucesso.', 'success');
+                        setTimeout(() => window.location.href = './workspace.html', 1500);
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            }
+
+            isConnected();
+
+            document.getElementById('passwordForm').addEventListener('submit', handleSavePassword);
+            document.getElementById('personalInfoForm').addEventListener('submit', handleSavePerson);
+        });
+    </script>
+</body>
+
+</html>

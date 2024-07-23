@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.3rem solid rgba(0, 0, 0, 0.3);
+            border-top: 0.3rem solid #000;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.1/purify.min.js"></script>
+</head>
+<body>
+    <div id="content" class="bodyPage mx-5 px-lg-5" style="display: none;">
+        <div class="content2 m-lg-5">
+            <h3 id="postTitle" class="mb-4"></h3>
+            <div id="imgPost">
+                <img id="postImage" alt="Imagem do post" class="img-fluid rounded" />
+            </div>
+            <p id="postDescription" class="text-box"></p>
+            <a id="postGithub" href="#">Github</a>
+        </div>
+    </div>
+    <div id="spinnerContainer" class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var postId = new URLSearchParams(window.location.search).get('id');
+
+            fetch('/api/fetchPostById/' + postId)
+                .then(response => response.json())
+                .then(post => {
+                    document.getElementById('postTitle').innerText = post.titulo;
+                    document.getElementById('postImage').src = post.img;
+                    document.getElementById('postGithub').href = post.github;
+                    document.getElementById('postDescription').innerHTML = DOMPurify.sanitize(post.descricao.replace(/\n/g, '<br>').replace(/\t/g, '&nbsp;&nbsp;'));
+
+                    document.getElementById('spinnerContainer').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                })
+                .catch(() => {
+                    window.location.href = '/pagina-nao-encontrada';
+                });
+        });
+    </script>
+</body>
+</html>

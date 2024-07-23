@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .alert-container {
+            display: flex;
+            justify-content: end;
+            position: relative;
+            height: 50px;
+        }
+
+        .alert {
+            position: absolute;
+            right: 0;
+        }
+
+        .spinner-container {
+            display: none;
+        }
+
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar-logo-left">
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="imgs/jpeg/logo.jpg" alt="Logo" loading="lazy" />
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav" id="header-singup">
+                        <li class="nav-item"><a class="nav-link" href="./">Inicio</a></li>
+                        <li class="nav-item"><a class="btn btn-dark ml-3" href="./signup.html">Já sou membro</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div>
+        <div id="alert-container" class="d-flex justify-content-end"></div>
+        <div id="loginDiv" class="container mb-5 d-flex justify-content-center">
+            <form id="loginForm">
+                <h5 class="d-flex m-4 justify-content-center custom-link text-decoration-none"><strong>BEM
+                        VINDO</strong></h5>
+                <div class="form-group p-2">
+                    <label class="d-flex justify-content-start"><strong>Login:</strong></label>
+                    <input placeholder="Insira seu login" id="login" type="text" class="form-control" required />
+                </div>
+                <div class="form-group p-2">
+                    <label class="d-flex justify-content-start"><strong>Senha:</strong></label>
+                    <input placeholder="Insira sua senha" id="senha" type="password" class="form-control" required />
+                </div>
+                <a class="small d-flex m-2 justify-content-end custom-link text-decoration-none" href="reset-password.html">Esqueceu sua senha?</a>
+                <button type="submit" class="btn btn-dark container mt-3 d-flex justify-content-center" id="submitButton">
+                    <span id="buttonText">Entrar</span>
+                    <div id="spinner" class="spinner-border spinner-border-sm text-light ml-2" role="status"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import UserService from './scripts/services/UserService.js';
+        import { showAlert } from './scripts/utils.js';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'none';
+
+            loginForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const login = document.getElementById('login').value;
+                const senha = document.getElementById('senha').value;
+
+                buttonText.style.display = 'none';
+                spinner.style.display = 'inline-block';
+
+                const body = {
+                    login: login,
+                    senha: senha
+                };
+
+                UserService.login(body)
+                    .then(response => {
+                        if (response.status === 200) {
+                            response.json().then(data => {
+                                console.log('Success:', data);
+                                localStorage.setItem('login', data.login);
+                                localStorage.setItem('token', data.token);
+                                localStorage.setItem('role', data.role);
+                                window.location.href = './workspace.html';
+                            });
+                        } else {
+                            response.json().then(data => {
+                                showAlert(data.errors[0], 'error');
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        showAlert('Erro ao realizar login. Tente novamente mais tarde.', 'error');
+                    })
+                    .finally(() => {
+                        buttonText.style.display = 'inline-block';
+                        spinner.style.display = 'none';
+                    });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

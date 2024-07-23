@@ -1,0 +1,1 @@
+export default function renderPasswordFormAdmin(users, containerId, setUser, setPassword, setCheckPassword, submitFunction) {...}

@@ -1,0 +1,1 @@
+export default function renderPostForm(post, containerId) {...}

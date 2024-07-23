@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Publicação</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .bodyPage {
+            margin: 20px;
+        }
+        .card-0 {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bodyPage mx-5 m-sm-5 m-lg-5">
+        <div class="alert alert-danger d-none" id="alert" role="alert"></div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-9 col-md-10 col-lg-3 d-flex flex-wrap justify-content-start my-3 m-sm-5">
+                <div class="card-0">
+                    <h3>Novo Projeto</h3>
+                    <p>Edite sua equipe, descrição e link do repositório do seu projeto. Após concluir, clique em salvar no final da página para gravar as alterações.</p>
+                    <h3 class="pt-5 d-flex justify-content-start">Equipe</h3>
+                    <div id="users-container" class="form-check"></div>
+                </div>
+            </div>
+            <div class="col-sm-9 col-md-10 col-lg-6 d-flex flex-wrap justify-content-start m-sm-5">
+                <div class="col">
+                    <h5 class='d-flex flex-wrap justify-content-start'>Título:*</h5>
+                    <input type="text" maxLength="100" class="form-control" id="title-container" required />
+
+                    <div class='col-5'>
+                        <label class='d-flex flex-wrap justify-content-start' for="exampleFormControlFile1">
+                            <h5 class='col d-flex flex-wrap justify-content-start'>Capa do projeto:*</h5>
+                        </label>
+                        <input encType="multipart/form-data" type="file" class="form-control-file col" id="exampleFormControlFile1" accept=".jpeg,.jpg" required />
+                        <img id="filePreview" alt="Preview" style="max-width: 100%; height: auto; margin-top: 10px;" />
+                    </div>
+
+                    <div>
+                        <h5 class='d-flex flex-wrap justify-content-start'>Descrição: *</h5>
+                        <textarea rows="10" maxLength="100000" class="form-control" id="descricao-container" placeholder="Adicione aqui uma descrição" aria-label="With textarea"></textarea>
+                    </div>
+
+                    <div class="col rounded float-center">
+                        <h5 class='d-flex flex-wrap justify-content-start'>Github: *</h5>
+                        <input type="text" class="form-control" id="git-container" required />
+                    </div>
+                    <div class='col-2 d-flex float-start'>
+                        <button id="deleteButton" class="btn btn-danger my-2">Deletar</button>
+                    </div>
+
+                    <div class="col">
+                        <div class="col d-flex flex-row-reverse">
+                            <button id="saveButton" class="btn btn-success my-2">Salvar</button>
+                            <a href="/workspace" class="btn btn-secondary m-2">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Utility function to show alert
+            function showAlert(message, type) {
+                const alertBox = document.getElementById('alert');
+                alertBox.className = 'alert alert-' + type;
+                alertBox.innerText = message;
+                alertBox.classList.remove('d-none');
+                setTimeout(() => {
+                    alertBox.classList.add('d-none');
+                }, 1500);
+            }
+
+            // Check if the user is connected
+            /* function isConnected() {
+                if (!localStorage.getItem('token')) {
+                    window.location.href = 'login.html';
+                }
+            } */
+
+            // Fetch users and populate the checkbox list
+            function fetchUsers() {
+                fetch('/api/fetchUsers')
+                    .then(response => response.json())
+                    .then(users => {
+                        const usersContainer = document.getElementById('users-container');
+                        usersContainer.innerHTML = '';
+                        users.forEach(user => {
+                            const userDiv = document.createElement('div');
+                            userDiv.innerHTML = `
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value="${user.id}"
+                                    ${selectedUsers.includes(user.id) ? 'checked' : ''}
+                                    ${user.login === localStorage.login ? 'disabled' : ''}
+                                />
+                                <label class="form-check-label d-flex justify-content-start">${user.login}</label>
+                            `;
+                            usersContainer.appendChild(userDiv);
+                        });
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            }
+
+            // Fetch post data and populate the form
+            function fetchPost() {
+                fetch('/api/fetchPost/' + localStorage.editPost)
+                    .then(response => response.json())
+                    .then(post => {
+                        document.getElementById('title-container').value = post.titulo;
+                        document.getElementById('descricao-container').value = post.descricao;
+                        document.getElementById('git-container').value = post.github;
+                        document.getElementById('filePreview').src = post.img;
+                        selectedUsers = post.profile_ids;
+                        fetchUsers();
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+            }
+
+            // Handle file change event
+            function handleFileChange(event) {
+                const selectedFile = event.target.files[0];
+                if (selectedFile) {
+                    const fileURL = URL.createObjectURL(selectedFile);
+                    document.getElementById('filePreview').src = fileURL;
+                    file = selectedFile;
+                } else {
+                    document.getElementById('filePreview').src = '';
+                }
+            }
+
+            // Handle save button click
+            function handleSave() {
+                if (!checkVariables()) return;
+
+                const formData = new FormData();
+                formData.append('id', localStorage.editPost);
+                formData.append('Titulo', document.getElementById('title-container').value);
+                formData.append('descricao', document.getElementById('descricao-container').value);
+                formData.append('github', document.getElementById('git-container').value);
+                formData.append('profile_ids', selectedUsers);
+                formData.append('status', 'PUBLICADO');
+                if (file) {
+                    formData.append('file', file);
+                }
+
+                fetch('/api/updatePost', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(() => {
+                    showAlert('Publicação editada com sucesso.', 'success');
+                    setTimeout(() => window.location.href = '/workspace', 1500);
+                })
+                .catch(error => showAlert(error.message, 'error'));
+            }
+
+            // Handle delete button click
+            function handleDelete() {
+                if (window.confirm("Deseja deletar essa publicação?")) {
+                    fetch('/api/deletePost/' + localStorage.editPost, {
+                        method: 'DELETE'
+                    })
+                    .then(() => {
+                        showAlert('Publicação deletada com sucesso.', 'success');
+                        setTimeout(() => window.location.href = '/workspace', 1500);
+                    })
+                    .catch(error => showAlert(error.message, 'error'));
+                }
+            }
+
+            // Check required variables before saving
+            function checkVariables() {
+                const title = document.getElementById('title-container').value;
+                const descricao = document.getElementById('descricao-container').value;
+                const github = document.getElementById('git-container').value;
+
+                if (!title || !descricao || !github) {
+                    showAlert('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            let selectedUsers = [];
+            let file = null;
+
+            isConnected();
+            fetchUsers();
+            fetchPost();
+
+            document.getElementById('exampleFormControlFile1').addEventListener('change', handleFileChange);
+            document.getElementById('saveButton').addEventListener('click', handleSave);
+            document.getElementById('deleteButton').addEventListener('click', handleDelete);
+        });
+    </script>
+</body>
+</html>
