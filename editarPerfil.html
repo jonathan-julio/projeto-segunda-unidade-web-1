@@ -140,7 +140,7 @@
                     .then((response) => {
                         if (response.status === 200) {
                             showAlert('Senha alterada com sucesso.', 'success');
-                            setTimeout(() => window.location.href = './workspace.html', 1500);
+                            setTimeout(() => window.location.href = './workspace ', 1500);
                         } else {
                             response.json().then(data => {
                                 showAlert(data.errors[0], 'error');
@@ -164,7 +164,7 @@
                 ProfileService.patchPerson(body)
                     .then(() => {
                         showAlert('Perfil atualizado com sucesso.', 'success');
-                        setTimeout(() => window.location.href = './workspace.html', 1500);
+                        setTimeout(() => window.location.href = './workspace ', 1500);
                     })
                     .catch(error => showAlert(error.message, 'error'));
             }

@@ -72,7 +72,7 @@ export function showAlert(message, type) {
 
 
 export function loadHeader() {
-  fetch('scripts/components/header.html')
+  fetch('scripts/components/header ')
     .then(response => response.text())
     .then(data => {
       document.getElementById('header').innerHTML = data;
