@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -7,27 +7,23 @@
     <title>Workspace</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
     <div id="header"></div>
-    <div class="bodyPage mx-3">
-        <aside class="gallery-overview m-3">
-            <div class="">
-                <div class="row">
-                    <div class="col-lg-3 p-5">
-                        <div class="card-0">
-                            <h3>Seja bem vindo <span id="user-login"></span></h3>
-                            <p>Ao lado está uma breve visualização das suas postagens e nelas as opções para ver mais ou
-                                editar.</p>
-                            <a href="createrPost " class="btn btn-dark">Nova Postagem</a>
-                        </div>
+    <div class="bodyPage mx-1">
+        <aside class="m-3">
+            <div class="row col d-flex justify-content-center">
+                <div class="col-lg-3 col-md-10 col-10 p-5">
+                    <div class="card-0">
+                        <h3>Seja bem vindo <span id="user-login"></span></h3>
+                        <p>Ao lado está uma breve visualização das suas postagens e nelas as opções para ver mais ou editar.</p>
+                        <a href="createrPost" class="btn btn-dark">Nova Postagem</a>
                     </div>
-                    <div class="col justify-content-center mx-0 mx-sm-4 ">
-                        <h3 class="row mx-10 d-flex justify-content-center">Suas Publicações</h3>
-                        <div id="posts-container" class="row d-flex justify-content-start"></div>
-                    </div>
+                </div>
+                <div class="col-lg-9 justify-content-center mx-0 m-sm-0">
+                    <h3 class="row d-flex justify-content-center">Suas Publicações</h3>
+                    <div id="posts-container" class="row"></div>
                 </div>
             </div>
         </aside>
@@ -35,19 +31,16 @@
 
     <script type="module">
         import { loadHeader } from './scripts/utils.js';
-        loadHeader();
-    </script>
-
-    <script type="module">
-
         import PostService from './scripts/services/postService.js';
         import UserService from './scripts/services/userService.js';
+
+        loadHeader();
 
         UserService.fetchUserByLogin(localStorage.getItem('login'))
             .then(async response => {
                 if (response.status === 200) {
                     response.json().then(data => {
-                        localStorage.setItem('id', data.id); 
+                        localStorage.setItem('id', data.id);
                         document.getElementById('user-login').innerText = data.person.nome;
                     });
                 } else {
@@ -56,7 +49,7 @@
                         showAlert(data.errors[0]);
                     });
                 }
-            })
+            });
 
         document.addEventListener('DOMContentLoaded', function () {
             // Função para truncar texto
@@ -68,9 +61,11 @@
             }
 
             // Função para editar post
-            function editPost(id) {
+            window.editPost = function (id) {
                 localStorage.setItem('editPost', id);
+                console.log("chamou a função");
             }
+
             PostService.fetchAllPosts()
                 .then(response => {
                     if (response.status === 200) {
@@ -81,40 +76,41 @@
                             } else {
                                 data.forEach(post => {
                                     const postCard = document.createElement('div');
-                                    postCard.className = 'col-sm-7 col-md-5 col-5 d-flex my-3 mx-0';
+                                    postCard.className = 'col-sm-5 col-md-4 col-lg-4 d-flex my-3 mx-0';
                                     postCard.innerHTML = `
                                     <div class="card card-fixed p-0">
                                         <div class="card-body card-body-fixed">
-                                            <img id='img-card' class="img-fluid pb-2" src="${post.img}" alt="Post Thumbnail" />
+                                            <img id='img-card' class="d-flex justify-content-center img-fluid pb-2" src="${post.img}" alt="Post Thumbnail" style="height: 150px; object-fit: cover;" />
                                             <h5 class="card-title" style="height: 20px; color: black;">${truncateText(post.titulo, 50)}</h5>
                                             <div class="card-text descWork pt-2" style="color: black;">${truncateText(post.descricao, 142)}</div>
                                         </div>
                                         <div class="row d-flex justify-content-center m-2">
-                                            <a target="_blank" rel="noreferrer" href="/post/${post.id}" onclick="editPost(${post.id})" class="btn btn-dark m-1">Ver mais</a>
-                                            <a href="/editar-post" onclick="editPost(${post.id})" class="btn btn-danger m-1 ${post.admin === localStorage.getItem('login') ? '' : 'd-none'}">Editar</a>
+                                            <a target="_blank" href="post?id=${post.id}" class="btn btn-dark m-1">Ver mais</a>
+                                            <a href="./editePost" onclick="editPost(${post.id})" class="btn btn-danger m-1 ${post.admin === localStorage.getItem('login') ? '' : 'd-none'}">Editar</a>
                                         </div>
                                     </div>
                                 `;
                                     postsContainer.appendChild(postCard);
                                 });
                             }
-
                         });
                     } else {
                         response.json().then(data => {
                             console.error('Error:', data.errors[0]);
                             showAlert(data.errors[0]);
                         });
-
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     showAlert('Erro ao realizar login. Tente novamente mais tarde.');
-                })
+                });
         });
-
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

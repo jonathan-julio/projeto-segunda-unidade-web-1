@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -97,20 +97,6 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
-            /* function showAlert(message, type) {
-                const alertContainer = document.getElementById('alert-container');
-                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert ${alertClass} position-fixed m-2 m-sm-1`;
-                alertDiv.style.zIndex = "9999";
-                alertDiv.role = 'alert';
-                alertDiv.innerText = message;
-                alertContainer.appendChild(alertDiv);
-
-                setTimeout(() => {
-                    alertContainer.removeChild(alertDiv);
-                }, 2500);
-            } */
             ProfileService.fetchPerson()
                 .then(response => response.json())
                 .then(person => {
@@ -175,6 +161,9 @@
             document.getElementById('personalInfoForm').addEventListener('submit', handleSavePerson);
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
 <body>
     <div id="header"></div>
     <div class="container">
-        <div class="alert alert-danger" role="alert" id="alert" style="display: none;"></div>
+        <div id="alert-container" class="d-flex justify-content-end"></div>
         <aside class="gallery-overview">
             <div class="container pb-2">
                 <div class="row d-flex justify-content-center">
@@ -26,7 +26,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-6">
                         <form id="personalizarForm">
                             <fieldset class="scheduler-border dadosPortfolio">
                                 <legend class="scheduler-border text-start">Dados do portfolio</legend>
@@ -60,14 +60,11 @@
                             </fieldset>
                         </form>
                     </div>
-                    <div class="col-lg-7 d-flex justify-content-center">
-                        <div>
-                            <h3 class="d-flex justify-content-center">Pré visualização</h3>
-                            <div id="posts-container" class="scaled-portfolio">
-                                <div style="width: 100%; height: 98%;">
-                                    <iframe id="myiframe" title="portfolio" style="width: 100%; height: 100%;"></iframe>
-                                </div>
-                            </div>
+                    <div class=" row col-lg-5 d-flex justify-content-center">
+                        <h3 class="d-flex justify-content-center" style="height: min-content">Pré visualização</h3>
+                        <div id="posts-container" class="scaled-portfolio" style="width: 100%;">
+                            <iframe id="myiframe" title="portfolio" style="width: 100%; height: 100%;"></iframe>
+
                         </div>
                     </div>
                 </div>
@@ -75,20 +72,19 @@
         </aside>
     </div>
     <script type="module">
-        import { loadHeader } from './scripts/utils.js';
+        import { loadHeader, showAlert, isConnected } from './scripts/utils.js';
 
         import UserService from './scripts/services/userService.js';
+
+        import ProfileService from './scripts/services/profileService.js';
         loadHeader();
+        isConnected();
 
         document.addEventListener('DOMContentLoaded', function () {
-            /* if (!localStorage.login) {
-                window.location.href = 'login ';
-            } */
 
             UserService.fetchUserByLogin(localStorage.login)
                 .then(response => response.json())
                 .then(user => {
-                    console.log(user);
                     const profile = user.person.profile;
                     document.getElementById('texto').value = profile.texto;
                     document.getElementById('textoSecundario').value = profile.textoSecundario;
@@ -99,77 +95,13 @@
                     document.getElementById('myiframe').src = './portfolio/' + localStorage.login;
                 })
                 .catch(error => {
-                    showAlert(error.message, 'error');
-                });
-
-            /* document.getElementById('personalizarForm').addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const body = {
-                    id: document.getElementById('id').value,
-                    texto: document.getElementById('texto').value,
-                    textoSecundario: document.getElementById('textoSecundario').value,
-                    about: document.getElementById('about').value,
-                    color: document.getElementById('color').value,
-                    background: document.getElementById('background').value
-                };
-
-                fetch('/api/putProfile', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                })
-                    .then(response => response.json())
-                    .then(() => {
-                        showAlert('Perfil atualizado com sucesso.', 'success');
-                        setTimeout(() => window.location.href = 'workspace ', 1500);
-                    })
-                    .catch(error => {
-                        showAlert(error.message, 'error');
-                    });
-            });
- */
-            /* function showAlert(message, type) {
-                const alertBox = document.getElementById('alert');
-                alertBox.className = 'alert alert-' + type;
-                alertBox.innerText = message;
-                alertBox.style.display = 'block';
-                setTimeout(() => {
-                    alertBox.style.display = 'none';
-                }, 1500);
-            } */
-        });
-    </script>
-
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            /* if (!localStorage.login) {
-                window.location.href = 'login ';
-            } */
-
-            fetch('/api/fetchUserByLogin/' + localStorage.login)
-                .then(response => response.json())
-                .then(user => {
-                    const profile = user.person.profile;
-                    document.getElementById('texto').value = profile.texto;
-                    document.getElementById('textoSecundario').value = profile.textoSecundario;
-                    document.getElementById('about').value = profile.about;
-                    document.getElementById('color').value = profile.color;
-                    document.getElementById('background').value = profile.background;
-
-                    document.getElementById('myiframe').src = '/portfolio/' + localStorage.login;
-                })
-                .catch(error => {
-                    showAlert(error.message, 'error');
+                    showAlert(error.message, 'error').then(() => window.location.href = './workspace ');
                 });
 
             document.getElementById('personalizarForm').addEventListener('submit', function (event) {
                 event.preventDefault();
 
                 const body = {
-                    id: document.getElementById('id').value,
                     texto: document.getElementById('texto').value,
                     textoSecundario: document.getElementById('textoSecundario').value,
                     about: document.getElementById('about').value,
@@ -177,34 +109,28 @@
                     background: document.getElementById('background').value
                 };
 
-                fetch('/api/putProfile', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                })
-                    .then(response => response.json())
-                    .then(() => {
-                        showAlert('Perfil atualizado com sucesso.', 'success');
-                        setTimeout(() => window.location.href = 'workspace ', 1500);
+                ProfileService.putProfile(body)
+                    .then(response => {
+                        if (response.status === 200) {
+                            showAlert('Perfil atualizado com sucesso.', 'success');
+                        }
+                        else {
+                            response.json().then(data => {
+                                showAlert(data.errors[0], 'error');
+                            });
+                        }
                     })
                     .catch(error => {
                         showAlert(error.message, 'error');
                     });
             });
 
-            function showAlert(message, type) {
-                const alertBox = document.getElementById('alert');
-                alertBox.className = 'alert alert-' + type;
-                alertBox.innerText = message;
-                alertBox.style.display = 'block';
-                setTimeout(() => {
-                    alertBox.style.display = 'none';
-                }, 1500);
-            }
         });
-    </script> -->
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

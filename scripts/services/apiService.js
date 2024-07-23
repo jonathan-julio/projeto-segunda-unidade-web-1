@@ -1,6 +1,6 @@
 // services/ApiService.js
 
-export const API_URL = 'http://localhost:8080/api';
+export const API_URL = 'https://80bc-177-89-225-229.ngrok-free.app/api';
 
 class ApiService {
     static async request(endpoint, method, body, headers = {}) {

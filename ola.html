@@ -1,67 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Não Encontrada</title>
+    <title>Portfolio</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         body {
+            color: #0000FF;
+            background: linear-gradient(to bottom, #FFFFFF, #3d3d3d);
+        }
+        .logo img {
+            width: 150px; /* Ajuste conforme necessário */
+        }
+        .section-layout, .section-projects, .section-about {
+            padding: 20px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+        }
+        .footer {
             background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        .spinner-container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
-
-        .container {
-            text-align: center;
-            background: white;
-            padding: 30px 50px;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.3rem solid rgba(0, 0, 0, 0.1);
+            border-top: 0.3rem solid #000;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
         }
-
-        h1 {
-            font-size: 100px;
-            margin-bottom: 20px;
-            color: #343a40;
-        }
-
-        p {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #6c757d;
-        }
-
-        .btn-home {
-            margin-top: 20px;
-            font-size: 16px;
-            padding: 10px 20px;
-        }
-
-        #original-url {
-            word-break: break-all;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ola</h1>
-        <p>Página Não Encontrada</p>
-       
-        <a href="/projecto/" class="btn btn-primary btn-home">Voltar para a Página Inicial</a>
-    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Captura a URL original
-            const originalUrl = window.location.href;
-            // Exibe a URL original na página
-            document.getElementById('original-url').textContent = originalUrl;
-        });
-    </script>
+<header class="d-flex justify-content-between align-items-center p-3">
+    <div class="logo">
+        <img id="logoPortfolio" src="logo.jpg" alt="Logo">
+    </div>
+    <div id="expanded-header"></div>
+    <div class="search-box">
+        <ul class="menu-items list-unstyled d-flex">
+            <li class="mx-3"><a href="/user/workspace/">Inicio</a></li>
+            <li class="mx-3"><a href="#endIntro">Projetos</a></li>
+            <li class="mx-3"><a href="#endTimeline">Sobre</a></li>
+        </ul>
+    </div>
+</header>
+
+<section class="section-layout text-center">
+    <div id="section-intro">
+        <div id="s1d"><h1 id="personName">Nome do Usuário</h1></div>
+        <div id="s1d" class="mb-3 w-50 mx-auto d-flex justify-content-center" id="profileText">Texto de Introdução</div>
+        <div id="s1d" class="mb-5" style="font-size: 20px;"><a href="#endIntro">Saiba mais</a></div>
+    </div>
+    <div id="section-intro-icon">
+        <div id="s1e" id="profileTextSecundario">Texto Secundário</div>
+    </div>
+</section>
+
+<section class="section-projects text-center">
+    <div><h2>Meus projetos</h2></div>
+    <div class="grid-container" id="projects-container">
+        <!-- Projetos serão inseridos aqui -->
+    </div>
+    <div>
+        <a href="#endTimeline">
+            <button class="btn btn-primary mt-4"><span class="arrow-down"></span></button>
+        </a>
+    </div>
+</section>
+
+<section id="about" class="section-about text-center">
+    <div><h2>Sobre</h2></div>
+    <div class="layout-about d-flex justify-content-center align-items-center">
+        <div id="section-intro-icon">
+            <img id="s1d" style="height: 4%; max-width: 300px;" src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Ícone">
+        </div>
+        <div id="text-about" class="ml-3">
+            <div id="s1e-about">Sobre o usuário</div>
+        </div>
+    </div>
+</section>
+
+<div class="footer">
+    <footer>
+        <p>&copy; <span id="currentYear"></span> Jonathan Julio - Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script type="module">
+    import UserService from './scripts/services/userService.js';
+
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    function populatePageWithUserData(user) {
+        document.getElementById('personName').textContent = user.nome;
+        document.getElementById('profileText').textContent = user.texto;
+        document.getElementById('profileTextSecundario').textContent = user.textoSecundario;
+        document.getElementById('s1e-about').textContent = user.about;
+
+        const projectsContainer = document.getElementById('projects-container');
+        if (user.posts.length === 0) {
+            projectsContainer.innerHTML = '<div class="grid-container-empty"><p>Nenhum projeto cadastrado.</p></div>';
+        } else {
+            user.posts.forEach((post, index) => {
+                const projectDiv = document.createElement('div');
+                projectDiv.innerHTML = `
+                    <a href="${post.github}">
+                        <div class="grid-item">
+                            <img src="${post.img}" alt="Foto ${index}">
+                            <div id="Title-post">${post.titulo}</div>
+                            <p>${post.descricao}</p>
+                        </div>
+                    </a>
+                `;
+                projectsContainer.appendChild(projectDiv);
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const path = window.location.pathname;
+        const login = path.split('/').pop();
+        
+        try {
+            const user = await UserService.fetchUserByLogin(login);
+            populatePageWithUserData(user);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            window.location.href = '/pagina-nao-encontrada';
+        }
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

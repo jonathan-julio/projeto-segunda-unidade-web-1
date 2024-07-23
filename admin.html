@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -82,7 +82,6 @@
             UserService.fetchUsers()
                 .then(response => {
                     response.json().then(data => {
-                        console.log(data);
                         users.push(...data);
                         populateUserSelect("logUserSelect");
                         populateUserSelect("permissionUserSelect");
@@ -97,9 +96,6 @@
 
             if (role === "ADMIN" || role === "MODERADOR") {
                 addAdminForms();
-            }
-            else {
-                console.log(role);
             }
         });
 
@@ -282,7 +278,6 @@
             AdminService.patchPasswordAdmin({ usuarioID: userSenha, password: password })
                 .then((response) => {
                     if (response.status === 200) {
-                        console.log(response);
                         showAlert('Senha alterada com sucesso.', 'success')
                     }
                     else {
@@ -293,6 +288,9 @@
                 })
         }
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

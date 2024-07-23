@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
         .bodyPage {
             margin: 20px;
         }
+
         .card-0 {
             padding: 20px;
             border: 1px solid #dee2e6;
@@ -17,14 +19,17 @@
         }
     </style>
 </head>
+
 <body>
+    <div id="header"></div>
     <div class="bodyPage mx-5 m-sm-5 m-lg-5">
         <div id="alert-container" class="d-flex justify-content-end"></div>
         <div class="row">
             <div class="col-sm-10 col-md-10 col-lg-3 d-flex flex-wrap justify-content-start my-3 m-sm-5">
                 <div class="card-0">
                     <h3>Novo Projeto</h3>
-                    <p>Edite sua equipe, descrição e link do repositório do seu projeto. Após concluir, clique em salvar no final da página para gravar as alterações.</p>
+                    <p>Edite sua equipe, descrição e link do repositório do seu projeto. Após concluir, clique em salvar
+                        no final da página para gravar as alterações.</p>
                     <h3 class="pt-5 d-flex justify-content-start">Equipe</h3>
                     <div id="users-container" class="form-check"></div>
                 </div>
@@ -38,13 +43,15 @@
                         <label class='d-flex flex-wrap justify-content-start' for="exampleFormControlFile1">
                             <h5 class='col d-flex flex-wrap justify-content-start'>Capa do projeto:*</h5>
                         </label>
-                        <input encType="multipart/form-data" type="file" class="form-control-file col" id="exampleFormControlFile1" accept=".jpeg,.jpg" required />
+                        <input encType="multipart/form-data" type="file" class="form-control-file col"
+                            id="exampleFormControlFile1" accept=".jpeg,.jpg" required />
                         <img id="filePreview" alt="Preview" style="max-width: 100%; height: auto; margin-top: 10px;" />
                     </div>
 
                     <div>
                         <h5 class='d-flex flex-wrap justify-content-start'>Descrição: *</h5>
-                        <textarea rows="10" maxLength="100000" class="form-control" id="descricao-container" placeholder="Adicione aqui uma descrição" aria-label="With textarea"></textarea>
+                        <textarea rows="10" maxLength="100000" class="form-control" id="descricao-container"
+                            placeholder="Adicione aqui uma descrição" aria-label="With textarea"></textarea>
                     </div>
 
                     <div class="col rounded float-center">
@@ -55,7 +62,7 @@
                     <div class="col">
                         <div class="col d-flex flex-row-reverse">
                             <button id="saveButton" class="btn btn-success my-2">Salvar</button>
-                            <a href="workspace " class="btn btn-secondary m-2">Cancelar</a>
+                            <a href="workspace" class="btn btn-secondary m-2">Cancelar</a>
                         </div>
                     </div>
                 </div>
@@ -63,37 +70,29 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function showAlert(message, type) {
-                const alertContainer = document.getElementById('alert-container');
-                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert ${alertClass} position-fixed m-2 m-sm-1`;
-                alertDiv.role = 'alert';
-                alertDiv.innerText = message;
-                alertContainer.appendChild(alertDiv);
+    <script type="module">
+        import {loadHeader,  isConnected, showAlert } from './scripts/utils.js';
+        import PostService from './scripts/services/postService.js';
+        import UserService from './scripts/services/userService.js';
+        loadHeader();
+        
+        const filePreview = document.getElementById('filePreview');
+        filePreview.style.display = 'none';
 
-                setTimeout(() => {
-                    alertContainer.removeChild(alertDiv);
-                }, 2500);
-            }
 
-            /* function isConnected() {
-                if (!localStorage.getItem('token')) {
-                    window.location.href = 'login ';
-                }
-            } */
+        document.addEventListener('DOMContentLoaded', function () {
+            isConnected();
+            let selectedUsers = [];
+            let file = null;
 
-            function fetchUsers() {
-                fetch('/api/fetchUsers')
-                    .then(response => response.json())
-                    .then(users => {
-                        const usersContainer = document.getElementById('users-container');
-                        usersContainer.innerHTML = '';
-                        users.forEach(user => {
-                            const userDiv = document.createElement('div');
-                            userDiv.innerHTML = `
+            UserService.fetchUsers()
+                .then(response => response.json())
+                .then(users => {
+                    const usersContainer = document.getElementById('users-container');
+                    usersContainer.innerHTML = '';
+                    users.forEach(user => {
+                        const userDiv = document.createElement('div');
+                        userDiv.innerHTML = `
                                 <input
                                     class="form-check-input"
                                     type="checkbox"
@@ -103,11 +102,10 @@
                                 />
                                 <label class="form-check-label d-flex justify-content-start">${user.login}</label>
                             `;
-                            usersContainer.appendChild(userDiv);
-                        });
-                    })
-                    .catch(error => showAlert(error.message, 'error'));
-            }
+                        usersContainer.appendChild(userDiv);
+                    });
+                })
+                .catch(error => showAlert(error.message, 'error'));
 
             function handleFileChange(event) {
                 const selectedFile = event.target.files[0];
@@ -115,6 +113,7 @@
                     const fileURL = URL.createObjectURL(selectedFile);
                     document.getElementById('filePreview').src = fileURL;
                     file = selectedFile;
+                    filePreview.style.display = 'inline-block';
                 } else {
                     document.getElementById('filePreview').src = '';
                 }
@@ -145,28 +144,32 @@
                     formData.append('file', file);
                 }
 
-                fetch('/api/createPost', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(() => {
-                    showAlert('Cadastro realizado com sucesso.', 'success');
-                    setTimeout(() => window.location.href = 'workspace ', 1500);
-                })
-                .catch(() => {
-                    showAlert('Erro ao realizar cadastro.', 'error');
-                });
+                PostService.createPost(formData)
+                    .then(response => {
+                        if (response.status === 201) {
+                            response.json().then(data => {
+                                showAlert('Cadastro realizado com sucesso.', 'success');
+                                setTimeout(() => window.location.href = 'workspace ', 1500);
+                            })
+                            setTimeout(() => window.location.href = 'workspace ', 1500);
+                        } else {
+                            showAlert(response.error, 'error');
+                        }
+                    })
+                    .catch(() => {
+                        showAlert('Erro ao realizar cadastro.', 'error');
+                    });
             }
 
-            let selectedUsers = [];
-            let file = null;
-
-            isConnected();
-            fetchUsers();
+            
 
             document.getElementById('exampleFormControlFile1').addEventListener('change', handleFileChange);
             document.getElementById('saveButton').addEventListener('click', handleSave);
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

@@ -5,14 +5,13 @@ RewriteEngine On
 RewriteBase /projecto/
 
 # Remove a extensão .html dos URLs
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.*)$ $1.html [L]
 
-# Redireciona URLs que começam com /projecto/portfolio/ e não existem para ola.html, mantendo a URL original
-RewriteCond %{REQUEST_URI} ^/projecto/portfolio/
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^portfolio/.*$ /projecto/ola.html [L]
+
+# Redireciona URLs que começam com /projecto/portfolio/ para ola.html
+RewriteRule ^portfolio/([^/]*)$ /projecto/ola.html [L,QSA]
 
 # Se o arquivo ou diretório não existir, redirecionar para 404.html
 RewriteCond %{REQUEST_FILENAME} !-f

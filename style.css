@@ -9,43 +9,8 @@
   flex: 1;
 }
 
-#card {
-  width: 290px;
-  height: 400px;
-  
-}
-
-.card-body {
-  margin-bottom: 0;
-  padding: 0;
-}
-
-.card-fixed {
-  width: 290px;
-  height: 400px;
-  padding: 0;
-
-  margin: 0;
-}
 
 
-.card-body-fixed {
-  display: flex;
-  flex-direction: column;
-  border-radius: 3px;
-}
-
-.card-title,
-.card-text {
-  height: 80px;
-  max-width: 250px;
-  font-size: 12px;
-}
-
-#img-card {
-  height: 150px;
-  border-radius: 10px;
-}
 
 #loginDiv {
   min-height: 78vh;
@@ -77,22 +42,51 @@
   padding-top: 10px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-bottom: 10px;
-  border-radius: 10px;
-  border: 1px solid #dddddd;
+}
+  #posts-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+    background: #e0e0e0;
+    max-width: 1000px;
+      justify-content: center;
+  }
+
+  @media screen and (min-width: 570px) and (max-width: 1075px) {
+    #posts-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      display: grid;
+      justify-content: center;
+    }
+  }
+  
+
+
+@media screen and (max-width: 570px) {
+  #posts-container {
+    grid-template-columns: repeat(1, 1fr);
+      gap: 5px;
+      display: grid;
+      justify-content: center;
+  }
 }
 
-#posts-container {
-  justify-content: space-between;
-  max-height: 800px;
-  max-width: 900px;
-  min-width: 300px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #dddddd;
-  background: #e0e0e0;
-  overflow-y: auto;
 
+
+.card{
+  min-width: 230px;
+  max-width: 300px;
+  padding: 0;
+  min-height: 400px;
+}
+
+#img-card {
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
 }
 
 .App-logo {
@@ -162,9 +156,6 @@
   /* Ajuste a cor conforme necessário */
 }
 
-.navbar-nav .nav-item .btn-info {
-  color: #fff;
-}
 
 @keyframes App-logo-spin {
   from {
@@ -194,7 +185,7 @@ legend.scheduler-border {
 
 
 .scaled-portfolio {
-  height: 495px;
+  height: 550px;
   overflow: scroll;
   overflow-x: hidden;
   border: 3px solid #dddddd;
@@ -238,6 +229,7 @@ legend.scheduler-border {
   justify-content: center;
   align-items: center;
   text-align: justify;
+  min-height: 400px;
 }
 
 .content2 h3 {
@@ -402,85 +394,14 @@ legend.scheduler-border {
 }
 
 .navbar-collapse {
-  display: flex;
+  position: relative;
+  align-items: center;
+  text-align: center;
 }
-
-
-
-
-
-@media screen and (max-width: 992px) {
-  .folder::before {
-    width: 430px;
-  }
-
-  .navbar-collapse {
-    display: flex;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .folder::before {
-    width: 330px;
-  }
-
-  .navbar-collapse {
-    display: flex;
-  }
-
-}
-
-
-
-@media screen and (max-width: 576px) {
-  .folder::before {
-    display: none;
-  }
-
-  .navbar-collapse {
-    display: block;
-  }
-
-  .navbar-collapse {
-    display: block;
-    position: absolute;
-    float: right;
-    width: 110px;
-    top: 49px;
-    right: 10px;
-    border-bottom-left-radius: 10px;
-  }
-}
-
-@media screen and (max-width: 376px) {
-  .folder::before {
-    width: 110px;
-  }
-
-  .navbar-collapse {
-    display: block;
-    position: absolute;
-    float: right;
-    width: 110px;
-    top: 49px;
-    right: 0;
-    border-bottom-left-radius: 10px;
-  }
-
-  .navbar-nav .nav-link {
-    color: black;
-    /* Cor inicial do texto */
-    transition: color 0.3s;
-    /* Transição suave para a mudança de cor */
-  }
-
-  .navbar-nav .nav-link:hover {
-    color: #61dafb;
-    /* Cor do texto ao passar o mouse */
-  }
-}
-
-
 #sidebar {
   border-radius: 20px;
+}
+
+#signupForm{
+  min-width: 300px;
 }
