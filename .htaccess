@@ -4,11 +4,13 @@ RewriteEngine On
 # Define a base para todas as regras de reescrita
 RewriteBase /projecto/
 
+# Excluir a pasta scripts das reescritas
+RewriteCond %{REQUEST_URI} !^/projecto/scripts/
+
 # Remove a extensão .html dos URLs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.*)$ $1.html [L]
-
 
 # Redireciona URLs que começam com /projecto/portfolio/ para ola.html
 RewriteRule ^portfolio/([^/]*)$ /projecto/ola.html [L,QSA]
