@@ -17,7 +17,8 @@
                 <div class="col-lg-3 col-md-10 col-10 p-5">
                     <div class="card-0">
                         <h3>Seja bem vindo <span id="user-login"></span></h3>
-                        <p>Ao lado está uma breve visualização das suas postagens e nelas as opções para ver mais ou editar.</p>
+                        <p>Ao lado está uma breve visualização das suas postagens e nelas as opções para ver mais ou
+                            editar.</p>
                         <a href="createrPost" class="btn btn-dark">Nova Postagem</a>
                     </div>
                 </div>
@@ -30,28 +31,40 @@
     </div>
 
     <script type="module">
-        import { loadHeader } from './scripts/utils.js';
+        import { loadHeader, isConnected } from './scripts/utils.js';
         import PostService from './scripts/services/postService.js';
         import UserService from './scripts/services/userService.js';
 
         loadHeader();
 
-        UserService.fetchUserByLogin(localStorage.getItem('login'))
-            .then(async response => {
-                if (response.status === 200) {
-                    response.json().then(data => {
-                        localStorage.setItem('id', data.id);
-                        document.getElementById('user-login').innerText = data.person.nome;
-                    });
-                } else {
-                    response.json().then(data => {
-                        console.error('Error:', data.errors[0]);
-                        showAlert(data.errors[0]);
-                    });
-                }
-            });
+        
+        window.addEventListener('load', function() {
+            isConnected();
+        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+
+
+        // Verifica a conexão do usuário imediatamente ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            // Verifica a conexão do usuário a cada minuto (60000 ms)
+            setInterval(isConnected(), 60000);
+
+            UserService.fetchUserByLogin(localStorage.getItem('login'))
+                .then(async response => {
+                    if (response.status === 200) {
+                        response.json().then(data => {
+                            localStorage.setItem('id', data.id);
+                            document.getElementById('user-login').innerText = data.person.nome;
+                        });
+                    } else {
+                        response.json().then(data => {
+                            console.error('Error:', data.errors[0]);
+                            showAlert(data.errors[0]);
+                        });
+                    }
+                });
+
             // Função para truncar texto
             function truncateText(text, maxLength) {
                 if (text.length > maxLength) {

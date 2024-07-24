@@ -45,12 +45,23 @@ export const truncateText = (text, maxLength) => {
 }; */
 
 export function isConnected() {
-  UserService.isConnected()
+  if (
+    localStorage.getItem("token") === null || localStorage.getItem("token") === ""  ) {
+    window.location.href = './';
+  }
+  else{
+    UserService.isConnected()
+    .then(response => {
+      response.json().then(data => {
+        console.log('conectado' + data);
+      });      
+    })
     .catch(() => {
       localStorage.setItem('login', "");
       localStorage.setItem('token', "");
-      window.location.href = '../';
-    });
+      window.location.href = './';
+    }); 
+  }
 }
 
 export function showAlert(message, type) {
@@ -64,7 +75,7 @@ export function showAlert(message, type) {
   alertContainer.appendChild(alertDiv);
 
   setTimeout(() => {
-      alertContainer.removeChild(alertDiv);
+    alertContainer.removeChild(alertDiv);
   }, 2500);
 }
 

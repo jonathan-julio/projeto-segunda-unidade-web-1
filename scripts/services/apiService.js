@@ -23,11 +23,11 @@ class ApiService {
     }
 
     static async requestFormData(endpoint, method, body) {
-        return this.requestFD(endpoint, method, body, { 'Authorization': `Bearer ${localStorage.token}` });
+        return this.requestFD(endpoint, method, body, { 'Authorization': `Bearer ${localStorage.getItem("token")}` });
     }
 
     static async requestWithAuth(endpoint, method, body) {
-        return this.request(endpoint, method, body, { 'Authorization': `Bearer ${localStorage.token}` });
+        return this.request(endpoint, method, body, { 'Authorization': `Bearer ${localStorage.getItem("token") }` });
     }
 
     static async requestJSON(endpoint, method, body, headers = {}) {

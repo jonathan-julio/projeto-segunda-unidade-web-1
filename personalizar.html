@@ -60,10 +60,10 @@
                             </fieldset>
                         </form>
                     </div>
-                    <div class=" row col-lg-5 d-flex justify-content-center">
+                    <div class=" row col-lg-6 d-flex justify-content-center">
                         <h3 class="d-flex justify-content-center" style="height: min-content">Pré visualização</h3>
-                        <div id="posts-container" class="scaled-portfolio" style="width: 100%;">
-                            <iframe id="myiframe" title="portfolio" style="width: 100%; height: 100%;"></iframe>
+                        <div  class="scaled-portfolio" style="width: 100%;  height: 90%; overflow-y: inherit;">
+                            <iframe id="myiframe" title="portfolio" style="width: 100%; height: 98%;"></iframe>
 
                         </div>
                     </div>
@@ -78,7 +78,10 @@
 
         import ProfileService from './scripts/services/profileService.js';
         loadHeader();
-        isConnected();
+        
+        window.addEventListener('load', function() {
+            isConnected();
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
 
