@@ -1,1 +1,0 @@
-export default function renderFormColumn(title, users, selectedUser, value, containerId, fetchFunction) {...}
